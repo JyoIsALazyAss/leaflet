@@ -2837,6 +2837,9 @@
             getLatLng: function() {
                 return this._latlng
             },
+            setValue: function(t) {
+                return this.options.value = this._value = t, this.redraw()
+            },
             setRadius: function(t) {
                 return this.options.radius = this._radius = t, this.redraw()
             },
@@ -4212,7 +4215,38 @@
                         e = this._ctx,
                         n = Math.max(Math.round(t._radius), 1),
                         o = (Math.max(Math.round(t._radiusY), 1) || n) / n;
-                    this._drawnLayers[t._leaflet_id] = t, 1 !== o && (e.save(), e.scale(1, o)), e.beginPath(), e.arc(i.x, i.y / o, n, 0, 2 * Math.PI, !1), 1 !== o && e.restore(), this._fillStroke(e, t)
+
+                    const value = t._value;
+
+                    const circleCircleCircle = () =>  {
+                        this._drawnLayers[t._leaflet_id] = t, 1 !== o && (e.save(), e.scale(1, o)), e.beginPath(), e.arc(i.x, i.y / o, n, 0, 2 * Math.PI, !1), 1 !== o && e.restore(), this._fillStroke(e, t);
+                    };
+
+                    if (typeof value !== 'undefined') {
+                        if (value > 1) {
+                            circleCircleCircle();
+                        } else {
+                            n /= 1.75;
+                            circleCircleCircle();
+                        }
+
+                        const color = t.feature.properties.fontSettings.font;
+                        e.lineWidth = 1;
+                        e.strokeStyle = color;
+                        e.fillStyle = color;
+                        e.textAlign = "center";
+                        e.font = `15px san-serif`;
+                        let { x, y } = i;
+                        x -= 0;
+                        y += 5;
+
+                        if (value > 1) {
+                            e.fillText(`${t._value}`, x, y);
+                        }
+                    } else {
+                        circleCircleCircle();
+                    }
+                    // e.strokeText(`${t._value}`, x, y);
                 }
             },
             _fillStroke: function(t, i) {
